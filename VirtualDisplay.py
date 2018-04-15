@@ -1,9 +1,12 @@
 import random, sys, time, pygame
 from pygame.locals import *
+from pygame import freetype
+import numpy as np
 import math
 
 # Constants
 FPS = 20  # Frame per second rate of render
+NUM_CHANNELS = 3
 MATRIX_PIXEL_SIZE = 10
 PIXEL_WIDTH = 64
 PIXEL_HEIGHT = 32
@@ -70,6 +73,27 @@ class PixelMatrix(object):
                 new_slope_error -= 2 * (x1 - x0)
             x += 1
 
+    def text(self, x, y, text, text_font, text_color=WHITE, bg_color=BLACK):
+        byte_string, dim = text_font.render_raw(text)
+        dim = dim[1], dim[0]  # Flipping the coord order for numpy
+        split_bytes = [int(bool(byte)) for byte in byte_string]
+        shaped_bitmap = np.reshape(split_bytes, dim).tolist()
+        colored_bitmap = [[text_color if bit else bg_color for bit in row] for row in shaped_bitmap]
+        self.image(x, y, colored_bitmap)
+
+    def image(self, x, y, pixels):
+        dim = (len(pixels[0]), len(pixels))
+        for i in range(dim[0]):
+            for j in range(dim[1]):
+                # WARNING: screen coordinates are (x, y) img coords are (y, x)
+                # since the img "displays" in the console properly this way
+                self.screen[x + i][y + j].color = pixels[j][i]
+
+    def points(self, coords, point_color):
+        pass
+
+# TODO: game of life
+
 
 def scrolling_pixel(pix_matrix, pixel_color=WHITE):
     col_offset = 0
@@ -86,6 +110,11 @@ def scrolling_pixel(pix_matrix, pixel_color=WHITE):
         yield pix_matrix
 
 
+# Loading the font
+freetype.init()
+font = freetype.Font('10x20.bdf')
+
+
 def main():
     global FPS_CLOCK, DISPLAY_SURF, BASIC_FONT
 
@@ -95,8 +124,6 @@ def main():
     pygame.display.set_caption('RGB Led Matrix Testing')
 
     BASIC_FONT = pygame.font.Font('freesansbold.ttf', 20)
-    row_offset = 0
-    col_offset = 0
     # Main game loop
     matrix = PixelMatrix(PIXEL_WIDTH, PIXEL_HEIGHT)
     scroll_effect = scrolling_pixel(matrix, (125, 27, 43))
@@ -121,8 +148,9 @@ def main():
 
         pixel_matrix = next(scroll_effect)
         pixel_matrix.line(10, 10, 20, 15, (16, 232, 78))
-        pixel_matrix.draw()
+        pixel_matrix.text(0, 0, "Test", font)
 
+        pixel_matrix.draw()
         pygame.display.update()
         FPS_CLOCK.tick(FPS)
 
