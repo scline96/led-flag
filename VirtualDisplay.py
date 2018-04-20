@@ -61,11 +61,28 @@ class PixelMatrix(object):
     def line(self, x0, y0, x1, y1, line_color=WHITE):
         # Implementation of Bresenham's line algorithm. (See Wikipedia)
         # TODO: Textured line
+        # Check if first set of points on screen
+        # initialize x and y, otherwise, initialize them to
+        if 0 <= x0 <= self.width and 0 <= y0 <= self.height:
+            x = x0
+            y = y0
+        elif 0 <= x0 <= self.width and 0 <= y0 <= self.height:
+            x = x1
+            y = y1
+        else:
+            # Clip line if possible
+            x_len = x0 - x1
+            if x_len:
+                pass
+            else:
+                # Handle vertical case
+                pass
+
         new_slope = 2 * (y1 - y0)
         new_slope_error = new_slope - (x1 - x0)
         x = x0
         y = y0
-        while x <= x1:
+        while x <= x1 and 0 <= x <= self.width:
             self.screen[x][y].color = line_color
             new_slope_error += new_slope
             if new_slope_error >= 0:
@@ -83,8 +100,9 @@ class PixelMatrix(object):
 
     def image(self, x, y, pixels):
         dim = (len(pixels[0]), len(pixels))
-        for i in range(dim[0]):
-            for j in range(dim[1]):
+        # Check to draw only the portion of the image that is on screen
+        for i in range(max(0, -x), min(dim[0], self.width - max(x, 0))):
+            for j in range(max(0, -y), min(dim[1], self.height - max(y, 0))):
                 # WARNING: screen coordinates are (x, y) img coords are (y, x)
                 # since the img "displays" in the console properly this way
                 self.screen[x + i][y + j].color = pixels[j][i]
@@ -92,7 +110,18 @@ class PixelMatrix(object):
     def points(self, coords, point_color):
         pass
 
+
 # TODO: game of life
+def life(initial=None):
+    if initial:
+        pass
+    else:
+        pass
+
+
+# TODO: Auto-pong
+def auto_pong():
+    pass
 
 
 def scrolling_pixel(pix_matrix, pixel_color=WHITE):
@@ -148,7 +177,7 @@ def main():
 
         pixel_matrix = next(scroll_effect)
         pixel_matrix.line(10, 10, 20, 15, (16, 232, 78))
-        pixel_matrix.text(0, 0, "Test", font)
+        pixel_matrix.text(-15, -7, "Test", font)
 
         pixel_matrix.draw()
         pygame.display.update()
