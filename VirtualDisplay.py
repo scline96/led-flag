@@ -63,32 +63,38 @@ class PixelMatrix(object):
         # TODO: Textured line
         # Check if first set of points on screen
         # initialize x and y, otherwise, initialize them to
-        if 0 <= x0 <= self.width and 0 <= y0 <= self.height:
-            x = x0
-            y = y0
-        elif 0 <= x0 <= self.width and 0 <= y0 <= self.height:
-            x = x1
-            y = y1
-        else:
-            # Clip line if possible
-            x_len = x0 - x1
-            if x_len:
-                pass
-            else:
-                # Handle vertical case
-                pass
+        if x0 > x1:
+            x0, x1 = (x1, x0)
+            y0, y1 = (y1, y0)
 
-        new_slope = 2 * (y1 - y0)
-        new_slope_error = new_slope - (x1 - x0)
-        x = x0
-        y = y0
-        while x <= x1 and 0 <= x <= self.width:
-            self.screen[x][y].color = line_color
-            new_slope_error += new_slope
-            if new_slope_error >= 0:
-                y += 1
-                new_slope_error -= 2 * (x1 - x0)
-            x += 1
+        x_len = x1 - x0
+        y_len = y1 - y0
+        if x_len:
+            new_slope = 2 * (y1 - y0)
+            new_slope_error = new_slope - (x1 - x0)
+            if x0 < 0:
+                slope = x_len / y_len
+                x = 0
+                y = round(y0 + slope * x_len)
+            else:
+                x = x0
+                y = y0
+            while x <= min(x1, self.width - 1) and 0 <= x <= self.width:
+                if y < 0 or y >= self.height:
+                    break
+                self.screen[x][y].color = line_color
+                new_slope_error += new_slope
+                if new_slope_error >= 0:
+                    y += 1
+                    new_slope_error -= 2 * (x1 - x0)
+                x += 1
+        else:
+            # Handle vertical case
+            y_start = max(min(y0, y1), 0)
+            y_end = min(max(y0, y1), self.height - 1)
+            if 0 <= x0 < self.width:
+                for i in range(y_start, y_end):
+                    self.screen[x0][i].color = line_color
 
     def text(self, x, y, text, text_font, text_color=WHITE, bg_color=BLACK):
         byte_string, dim = text_font.render_raw(text)
@@ -176,7 +182,7 @@ def main():
                 pass
 
         pixel_matrix = next(scroll_effect)
-        pixel_matrix.line(10, 10, 20, 15, (16, 232, 78))
+        pixel_matrix.line(-2, -2, 30, 40, (16, 232, 78))
         pixel_matrix.text(-15, -7, "Test", font)
 
         pixel_matrix.draw()
