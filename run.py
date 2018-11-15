@@ -7,7 +7,15 @@ import time
 class RunMenu(SampleBase):
     def __init__(self, *args, **kwargs):
             super(RunMenu, self).__init__(*args, **kwargs)
+
+    def draw_highlighted(text, font_height, font_width):
+            line_len = 
+            green = graphics.Color(0, 128, 0)
+            black = graphics.Color(0, 0, 0)
             
+            len = graphics.DrawText(offscreen_canvas
+
+
     def run(self):
             offscreen_canvas = self.matrix.CreateFrameCanvas()
             font = graphics.Font()
