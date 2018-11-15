@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -9,7 +9,7 @@ def home():
         return render_template('index.html')
 
 
-@socketio.on('button')
+@socketio.on('button', namespace='/led')
 def buttonPressed(button_name):
     print(str(button_name) + ' pressed!')
 

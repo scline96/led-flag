@@ -1,7 +1,8 @@
-var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+var namespace = 'led'
+var socket = io.connect('http://' + location.host);
 
 
 function button(){
-	console.log('button pressed')
 	socket.emit('button', 'name')
+	console.log('button pressed')
 }
