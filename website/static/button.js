@@ -1,5 +1,5 @@
 var namespace = 'led'
-var socket = io.connect('http://' + location.host);
+var socket = io.connect('http://' + document.domain + ":" + location.port);
 
 
 function button(){

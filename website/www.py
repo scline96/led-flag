@@ -9,8 +9,9 @@ def home():
         return render_template('index.html')
 
 
-@socketio.on('button', namespace='/led')
+@socketio.on('button')
 def buttonPressed(button_name):
     print(str(button_name) + ' pressed!')
 
-socketio.run(app, use_reloader=False, port=5000, host='0.0.0.0', debug=True)
+if __name__ == '__main__':
+    socketio.run(app, use_reloader=False, port=5000, host='0.0.0.0', debug=True)
