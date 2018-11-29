@@ -13,18 +13,11 @@ def home():
     # Return the index page
     return render_template('index.html')
 
-<<<<<<< HEAD
 @socketio.on('button')
-=======
-## On the socketio call 'button'
-@socketio.on('button', namespace='/led')
->>>>>>> 0257a393f087bb914c1e2ddd4d7edbbc61ba9e2c
 def buttonPressed(button_name):
     # Print that the user pressed a button
     print(str(button_name) + ' pressed!')
 
-<<<<<<< HEAD
-=======
     '''
         This is where the LED stuff can happen, we can also add more
         socketio.on statements for different buttons or other actions 
@@ -34,6 +27,5 @@ def buttonPressed(button_name):
     '''
 
 
->>>>>>> 0257a393f087bb914c1e2ddd4d7edbbc61ba9e2c
 if __name__ == '__main__':
     socketio.run(app, use_reloader=False, port=5000, host='0.0.0.0', debug=True)
