@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import subprocess
-from led_matrix import *
 
 ## Setup the flask application and socketio object
 app = Flask(__name__)
@@ -19,7 +18,7 @@ def buttonPressed(button_name):
     # Print that the user pressed a button
     print(str(button_name) + ' pressed!')
 
-    subprocess.call(['sudo', 'python', 'runtext.py', '-t', button_name])
+    subprocess.call(['sudo', 'python', 'runtext.py', '-t', button_name, '--led-cols', '64'])
     '''
         This is where the LED stuff can happen, we can also add more
         socketio.on statements for different buttons or other actions 
